@@ -1,0 +1,99 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'jacoco'
+    id 'checkstyle'
+    id 'org.springframework.boot' version libs.versions.spring
+    id 'io.spring.dependency-management' version libs.versions.springDependencyManagement
+}
+
+group = 'com.example.xphr'
+version = '1.0-SNAPSHOT'
+description = 'An assignment for xphr'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    toolchain { languageVersion.set(JavaLanguageVersion.of(17)) }
+}
+
+[compileJava, compileTestJava]*.options.collect { options -> options.encoding = 'UTF-8' }
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    implementation libs.springbootStarterWeb
+    implementation libs.springbootStarterActuator
+    implementation libs.spingbootDataJpa
+    implementation libs.feign
+    implementation libs.flyway
+    implementation libs.swagger
+    implementation libs.springbootStarterSecurity
+    implementation libs.jjwtApi
+    implementation libs.jjwtImpl
+    implementation libs.jjwtJackson
+
+    runtimeOnly libs.postgres
+    testImplementation libs.springbootStarterTest
+    testImplementation libs.junit
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+}
+
+ext {
+    set('springCloudVersion', '2023.0.0')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoTestReport')
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events('passed', 'failed', 'skipped')
+    }
+}
+
+test.finalizedBy jacocoTestReport
+
+checkstyle {
+    configFile = file("${rootDir}/codequality/checkstyle.xml")
+    toolVersion = '10.12.3'
+    checkstyleTest.enabled = false
+}
+
+tasks.register('checkstyle', Checkstyle) {
+    checkstyleMain.source = "src/main/java"
+    ignoreFailures = true
+    showViolations = true
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}

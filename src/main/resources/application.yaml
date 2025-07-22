@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: local
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+log4j:
+  configurationFile: classpath:log4j2.xml
