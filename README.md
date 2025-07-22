@@ -1,6 +1,51 @@
 # XPHR Assignment
 
 ## 1. Database Query Optimization
+### 1.1. Analyze the Query Performance
+- Run EXPLAIN ANALYZE on the query
+![img.png](img.png)
+- Potential issues:
+  - Sequential scan on time_record without indexing
+  - Multiple nested subqueries
+### 1.2. Optimization:
+   - Index to help with filtering in WHERE clause, example:
+     ```
+     CREATE INDEX IF NOT EXISTS idx_time_record_time_from ON time_record(time_from);
+     ```
+   - Use merge joins to join tables
+   - Optionally, create Materialized view, example:
+     ```
+     CREATE MATERIALIZED VIEW mv_monthly_hours AS
+     SELECT
+     tr.employee_id,
+     e.name AS employee_name,
+     p.name AS project_name,
+     SUM(EXTRACT(EPOCH FROM (tr.time_to - tr.time_from)) / 3600) AS total_hours
+     FROM time_record tr
+     JOIN employee e ON tr.employee_id = e.id
+     JOIN project p ON tr.project_id = p.id
+     WHERE tr.time_from >= NOW() - INTERVAL '1 month'
+     GROUP BY tr.employee_id, e.name, p.name;
+     ```
+### 1.3. Revised query:
+```
+SELECT
+    tr.employee_id,
+    e.name AS employee_name,
+    p.name AS project_name,
+    SUM(EXTRACT(EPOCH FROM (tr.time_to - tr.time_from)) / 3600) AS total_hours
+FROM time_record tr
+JOIN employee e ON tr.employee_id = e.id
+JOIN project p ON tr.project_id = p.id
+WHERE tr.time_from >= NOW() - INTERVAL '1 month'
+GROUP BY tr.employee_id, e.name, p.name
+ORDER BY e.name, p.name;
+```
+### 1.4. After optimization:
+   - Index scan on time_record.time_from
+   - Merge joins between time_record, employee, and project
+   - Grouping and sorting are efficient due to direct column use
+
 ## 2. JSP-Based Reporting Page
 
 The XPHR API contains following components:
@@ -11,7 +56,7 @@ The XPHR API contains following components:
 | Database   |                                             | Electronic Store Database. | Postgres                                                                              |
 | Swagger UI | http://localhost:8080/swagger-ui/index.html | API documentation.         | HTML                                                                                  |
 
-## 2. Directory structure
+### 2.1. Directory structure
 
 ```plaintext
    project-root/
@@ -32,29 +77,29 @@ The XPHR API contains following components:
    └── README.md                                        # Project documentation
    ```
 
-## 3. Installation
+### 2.2. Installation
 
-### 3.1. Prerequisites
+#### 2.2.1. Prerequisites
 
 - JDK >= 17
 - Docker
 - Gradle >= 7.5
 
-### 3.2. Build
+#### 2.2.2. Build
 
-#### 3.2.1. Start project
+##### 2.2.2.1. Start project
 
 ```shell
   docker compose up --build -d
 ```
 
-#### 3.2.2. Stop project
+#### 2.2.2.2 Stop project
 
 ```shell
   docker compose down
 ```
 
-## 4. Endpoint
+### 2.3. Endpoint
 Once the service is up, the following endpoint will be available:
 
 | Endpoints         | Method | Type    | Description                        |
