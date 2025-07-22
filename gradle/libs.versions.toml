@@ -27,6 +27,8 @@ springbootStarterSecurity = { module = 'org.springframework.boot:spring-boot-sta
 jjwtApi = { module = 'io.jsonwebtoken:jjwt-api', version.ref = 'jjwt'}
 jjwtImpl = { module = 'io.jsonwebtoken:jjwt-impl', version.ref = 'jjwt'}
 jjwtJackson = { module = 'io.jsonwebtoken:jjwt-jackson', version.ref = 'jjwt'}
+openfeign = { module = 'org.springframework.cloud:spring-cloud-starter-openfeign' }
+jasper = { module = 'org.apache.tomcat.embed:tomcat-embed-jasper' }
 
 [plugins]
 

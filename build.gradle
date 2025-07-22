@@ -23,6 +23,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    configureEach {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
 }
 
 repositories {
@@ -51,7 +54,9 @@ dependencies {
     testImplementation libs.springbootStarterTest
     testImplementation libs.junit
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation libs.openfeign
+    implementation libs.jasper
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 }
 

@@ -40,6 +40,26 @@ public class ReportController {
                                      = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                              Model model,
                              Authentication authentication) {
+        if (startDate == null || endDate == null) {
+            startDate = LocalDateTime.now().minusMonths(1);
+            endDate = LocalDateTime.now();
+        }
+
+        List<ReportDTO> reportData;
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            reportData = reportService.getReportData(startDate, endDate);
+        } else {
+            String username = authentication.getName();
+            reportData = reportService.getReportDataForUser(username, startDate, endDate);
+        }
+
+        model.addAttribute("reportData", reportData);
+
+        log.info("Report data: {}", reportData);
         return "work_hours_report";
     }
 }
