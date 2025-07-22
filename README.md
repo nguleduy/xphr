@@ -1,4 +1,4 @@
-# XPHR Assignement
+# XPHR Assignment
 
 ## 1. Database Query Optimization
 ## 2. JSP-Based Reporting Page
