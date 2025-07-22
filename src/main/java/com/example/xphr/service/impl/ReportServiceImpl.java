@@ -4,10 +4,11 @@ import com.example.xphr.dto.ReportDTO;
 import com.example.xphr.repository.TimeRecordRepository;
 import com.example.xphr.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Report Service Impl.
@@ -18,29 +19,32 @@ public class ReportServiceImpl implements ReportService {
 
     final TimeRecordRepository timeRecordRepository;
 
-    @Override
-    public List<ReportDTO> getReportData(LocalDateTime startDate, LocalDateTime endDate) {
-        return mapToReportDTOs(timeRecordRepository.getReportData(startDate, endDate));
-    }
 
     @Override
-    public List<ReportDTO> getReportDataForUser(
+    public Page<ReportDTO> getReportDataForUser(
             String username,
             LocalDateTime startDate,
-            LocalDateTime endDate) {
-        return mapToReportDTOs(timeRecordRepository.getReportData(startDate, endDate)).stream()
-                .filter(r -> r.username().equals(username))
-                .toList();
+            LocalDateTime endDate,
+            Pageable pageable) {
+        return timeRecordRepository.getReportDataForUser(startDate, endDate, username, pageable)
+                .map(this::mapRowToReportDTO);
     }
 
-    private List<ReportDTO> mapToReportDTOs(List<Object[]> rows) {
-        return rows.stream()
-                .map(row -> new ReportDTO(
-                        (String) row[0],
-                        (String) row[1],
-                        (String) row[2],
-                        ((Number) row[3]).doubleValue()))
-                .toList();
+    @Override
+    public Page<ReportDTO> getReportData(LocalDateTime startDate,
+                                         LocalDateTime endDate,
+                                         Pageable pageable) {
+        return timeRecordRepository.getReportData(startDate, endDate, pageable)
+                .map(this::mapRowToReportDTO);
+    }
+
+    private ReportDTO mapRowToReportDTO(Object[] row) {
+        return new ReportDTO(
+                (String) row[0], // username
+                (String) row[1], // employee name
+                (String) row[2], // project name
+                ((Number) row[3]).doubleValue() // total hours
+        );
     }
 
 }
