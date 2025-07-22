@@ -122,4 +122,4 @@ Once the service is up, the following endpoint will be available:
     --header 'X-USER-ID: ronaldo'
 ```
 ### 2.4. Response
-![img_1.png](img_1.png)```json
+![img_1.png](img_1.png)
