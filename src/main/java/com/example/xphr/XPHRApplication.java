@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @OpenAPIDefinition(
         info = @Info(
-                title = "Ó API",
+                title = "XPHR API",
                 version = "1.0",
                 description = "API documentation for the XPHR")
 )

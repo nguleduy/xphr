@@ -68,11 +68,11 @@ Once the service is up, the following endpoint will be available:
   - Default Employee roles: `ronaldo`, `messi`, `neymar`
 - Example CURL request for Admin:
 ```shell
-  curl --location 'http://localhost:8081/api/v1/report?startDate=2025-07-01T00%3A00%3A00&endDate=2025-07-30T23%3A59%3A59' \
+  curl --location 'http://localhost:8080/api/v1/report?startDate=2025-07-01T00%3A00%3A00&endDate=2025-07-30T23%3A59%3A59' \
 --header 'X-USER-ID: admin'
 ```
 - Example CURL request for Employee:
 ```shell
-  curl --location 'http://localhost:8081/api/v1/report?startDate=2025-07-01T00%3A00%3A00&endDate=2025-07-30T23%3A59%3A59' \
+  curl --location 'http://localhost:8080/api/v1/report?startDate=2025-07-01T00%3A00%3A00&endDate=2025-07-30T23%3A59%3A59' \
 --header 'X-USER-ID: ronaldo'
 ```
