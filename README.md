@@ -121,3 +121,5 @@ Once the service is up, the following endpoint will be available:
     curl --location 'http://localhost:8080/api/v1/report?startDate=2025-07-01T00%3A00%3A00&endDate=2025-07-30T23%3A59%3A59&size=3&page=0' \
     --header 'X-USER-ID: ronaldo'
 ```
+### 2.4. Response
+![img_1.png](img_1.png)```json
