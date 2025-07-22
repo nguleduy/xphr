@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: docker
   mvc:
     view:
       prefix: /WEB-INF/views/
